@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Hacker News</title>
+</head>
+<body>
+    <div>
+        <h1> API DO HACKER NEWS</h1>
+        <p>digite o que você deseja consultar, colocando apenas os comandos, sem o dominio e a parte de autentificação</p>
+        <p> por exemplo v0/item/8863.json</p>
+        <label for="consulta">Consulta:</label>
+        <input type="text" id="consulta">
+        <button id="btnBuscar">Buscar</button>
+    </div>
+    <div id="resultado"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const resultadoDiv = document.getElementById('resultado');
+            const consultaInput = document.getElementById('consulta');
+            const btnBuscar = document.getElementById('btnBuscar');
+
+            function exibirDados(apiEndpoint) {
+                fetch(apiEndpoint)
+                    .then((res) => res.json())
+                    .then((data) => {
+                        // Limpa o conteúdo anterior antes de exibir novos dados
+                        resultadoDiv.innerHTML = '';
+
+                        // Exibe os resultados relevantes
+                        const paragrafo = document.createElement('p');
+                        paragrafo.innerHTML = `Título: ${data.title}<br>`;
+                        paragrafo.innerHTML += `Pontuação: ${data.score}<br>`;
+                        paragrafo.innerHTML += `id: ${data.id}<br>`;
+                        resultadoDiv.appendChild(paragrafo);
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao recuperar os dados:', error);
+                    });
+            }
+
+            // Adiciona um evento de clique ao botão para realizar a busca com base nos parâmetros inseridos
+            btnBuscar.addEventListener('click', () => {
+                const consulta = consultaInput.value.trim();
+                // Constrói a URL com base nos parâmetros fornecidos pelo usuário
+                const url = `https://hacker-news.firebaseio.com/${consulta}?print=pretty`;
+
+                // Chama a função para exibir os dados com base nos novos parâmetros
+                exibirDados(url);
+            });
+        });
+    </script>
+</body>
+</html>
